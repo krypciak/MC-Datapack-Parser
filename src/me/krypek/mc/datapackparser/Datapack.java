@@ -11,42 +11,49 @@ import me.krypek.utils.Utils;
 public class Datapack {
 	private static final String PACKMCMETA_NAME = "pack.mcmeta";
 
-	public record DatapackFunction(String submodule, String name, String contents) {}
+	//@f:off
+	/// Example: getLoadTickString("submodule:tick");
+	public static String getLoadTickString(String values) {
+		return    "{\n"
+				+ "    \"values\": [\n"
+				+ values
+				+ "\n    ]\n" 
+				+ "}";
+	}
+	//@f:on
 
-	public final String NAME, DESCRIPTION;
-	public final int PACK_FORMAT;
+	public record DatapackFunction(String submodule, String name, String contents) {
+		@Override
+		public String toString() { return submodule + ":" + name + " ->\n" + contents; }
+
+	}
+
+	public final String naem, description;
+	public final int packFormat;
 
 	private final String PACKMCMETA_CONTENTS;
 
 	public final DatapackFunction[] functions;
 
+	@Override
+	public String toString() {
+		return naem + ":\n" + description + "\n------------------------\npack_format: " + packFormat + "\nFunctions:\n"
+				+ Utils.arrayToString(functions, "\n") + "\n";
+	}
+
 	public Datapack(String name, int pack_format, String description, DatapackFunction[] functions) {
-		this.NAME = name;
-		this.PACK_FORMAT = pack_format;
-		this.DESCRIPTION = description;
+		this.naem = name;
+		this.packFormat = pack_format;
+		this.description = description;
 		this.functions = functions;
 		//@f:off
 		PACKMCMETA_CONTENTS = 
 				  "{\n"
 				+ "	\"pack\": {\n"
-				+ "		\"pack_format\": " + PACK_FORMAT + ",\n"
-				+ "		\"description\": \"" + DESCRIPTION + "\"\n"
+				+ "		\"pack_format\": " + packFormat + ",\n"
+				+ "		\"description\": \"" + description + "\"\n"
 				+ "	}\n"
 				+ "}";
-		
-		/*LOAD_CONTENTS = 
-				  "{\n"
-				+ "    \"values\": [\n"
-				+ "		\"" + tagSubmodule + ":load\"\n"
-				+ "    ]\n"
-				+ "}";
-		
-		TICK_CONTENTS = 
-				  "{\n"
-				+ "	\"values\": [\n"
-				+ "		\"" + tagSubmodule + ":tick\"\n"
-				+ "	]\n"
-				+ "}\n";*/
 		//@f:on
 	}
 
@@ -71,8 +78,7 @@ public class Datapack {
 		File datapackFile = new File(datapackPath);
 		if(!datapackFile.exists())
 			throw new IllegalArgumentException("Datapack doesn't exist!");
-		if(datapackFile.isDirectory())
-			throw new IllegalArgumentException("Datapack path has to be a folder!");
+
 		datapackPath = datapackFile.getAbsolutePath();
 
 		String name = datapackFile.getName();
@@ -86,7 +92,7 @@ public class Datapack {
 		}
 
 		File dataFolder = new File(datapackFile.getAbsolutePath() + '/' + "/data");
-		if(!dataFolder.exists() || !dataFolder.isDirectory())
+		if(!dataFolder.exists())
 			throw new IllegalArgumentException("Data folder doesn't exist!");
 
 		List<DatapackFunction> functionList = new ArrayList<>();
@@ -115,7 +121,6 @@ public class Datapack {
 
 		Datapack datapack = new Datapack(name, pack_format, description, functionList.toArray(DatapackFunction[]::new));
 		return datapack;
-
 	}
 
 }
