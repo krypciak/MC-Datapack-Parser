@@ -28,7 +28,7 @@ public class Datapack {
 
 	}
 
-	public final String naem, description;
+	public final String name, description;
 	public final int packFormat;
 
 	private final String PACKMCMETA_CONTENTS;
@@ -37,12 +37,12 @@ public class Datapack {
 
 	@Override
 	public String toString() {
-		return naem + ":\n" + description + "\n------------------------\npack_format: " + packFormat + "\nFunctions:\n"
+		return name + ":\n" + description + "\n------------------------\npack_format: " + packFormat + "\nFunctions:\n"
 				+ Utils.arrayToString(functions, "\n") + "\n";
 	}
 
 	public Datapack(String name, int pack_format, String description, DatapackFunction[] functions) {
-		this.naem = name;
+		this.name = name;
 		this.packFormat = pack_format;
 		this.description = description;
 		this.functions = functions;
@@ -58,7 +58,7 @@ public class Datapack {
 	}
 
 	public void parse(String datapackPath) {
-		File datapackFile = new File(datapackPath);
+		File datapackFile = new File(datapackPath + "/" + name);
 		datapackFile.mkdirs();
 		datapackPath = datapackFile.getAbsolutePath();
 
