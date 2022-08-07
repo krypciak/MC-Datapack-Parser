@@ -114,6 +114,8 @@ public class Datapack {
 
 			File[] functions = new File(submodule.getAbsolutePath() + "/functions/").listFiles();
 			for (File file : functions) {
+				if(file.isDirectory())
+					continue;
 				String contents = Utils.readFromFile(file, "\n");
 				functionList.add(new DatapackFunction(submoduleName, file.getName(), contents));
 			}
